@@ -48,17 +48,7 @@ pipeline {
         }
 
       }
-      stage('Testing on debian'){
-        agent{
-          docker 'openjdk:8u121-jre'
-        }
-        steps{
-          sh "wget http://uday7g3.mylabserver.com/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar"
-          sh "java -jar rectangle_${env.BUILD_NUMBER}.jar 3 4"
-
-             }
-
-         }
+      
      }
 
 }
