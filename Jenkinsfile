@@ -65,7 +65,7 @@ pipeline {
           label 'apache'
         }
          when {
-           brach 'development'
+           branch 'development'
          }
          steps{
            echo " Stashing any Local Changes"
