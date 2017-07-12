@@ -34,7 +34,8 @@ pipeline {
           label 'apache'
         }
         steps{
-          sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/"
+          sh "mkdir /var/www/html/rectangles/all/${env.BRANCH_NAME}"
+          sh "cp dist/rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/all/${env.BRANCH_NAME}/"
         }
 
       }
@@ -43,9 +44,8 @@ pipeline {
           label 'CentOS'
         }
         steps{
-          sh "wget http://uday7g3.mylabserver.com/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar"
+          sh "wget http://uday7g3.mylabserver.com/rectangles/all/${env.BRANCH_NAME}/rectangle_${env.BUILD_NUMBER}.jar"
           sh "java -jar rectangle_${env.BUILD_NUMBER}.jar 3 4"
-          sh "cp rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/green/"
         }
 
       }
@@ -54,11 +54,31 @@ pipeline {
           label 'apache'
         }
         when {
-          branch 'development'
+          branch 'master'
         }
         steps{
           sh "cp /var/www/html/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar  /var/www/html/rectangles/green/"
         }
+      }
+      stage('promote development branch to master') {
+        agent{
+          label 'apache'
+        }
+         when {
+           brach 'Development'
+         }
+         steps{
+           echo " Stashing any Local Changes"
+           sh "git stash"
+           echo "Checking out Development Branch"
+           sh "git checkout development"
+           echo "checking out Master branch"
+           sh "git checkout master"
+           echo "merging development Branch into Master"
+           sh "git merge development"
+           echo "pushing to Origin master"
+           sh "git push origin master"
+         }
       }
      }
 
