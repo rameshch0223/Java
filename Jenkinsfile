@@ -45,15 +45,16 @@ pipeline {
         steps{
           sh "wget http://uday7g3.mylabserver.com/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar"
           sh "java -jar rectangle_${env.BUILD_NUMBER}.jar 3 4"
+          sh "cp rectangle_${env.BUILD_NUMBER}.jar /var/www/html/rectangles/green/"
         }
 
       }
       stage('promote to green'){
         agent {
-          label 'CentOS'
+          label 'apache'
         }
         steps{
-          sh "cp rectangle_${env.BUILD_NUMBER}.jar  /var/www/html/rectangles/green"
+          sh "cp /var/www/html/rectangles/all/rectangle_${env.BUILD_NUMBER}.jar  /var/www/html/rectangles/green/"
         }
       }
      }
